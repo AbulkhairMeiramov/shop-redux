@@ -2,16 +2,22 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Box, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { stringAvatar } from "../utils/getAvatarString";
-import { React, useState } from "react";
+import { React, useState, useCallback, useEffect } from "react";
 import { setRemoveToken } from "../store/slice/auth";
+import { loadCategories } from "../store/actions/loadCategories";
 
 const settings = ["Logout"];
 
-export function Navbar({ title, rightContent, ...rest }) {
+export function Navbar({ title, rightContent, leftContent, ...rest }) {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.auth);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -24,22 +30,23 @@ export function Navbar({ title, rightContent, ...rest }) {
     setAnchorElUser(null);
   };
 
+  const load = useCallback(() => {
+    dispatch(loadCategories());
+  }, [dispatch]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
   return (
     <AppBar position="sticky" {...rest}>
       <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div">
           {title}
         </Typography>
-        <Box sx={{ flexGrow: 0 }}>
+        {leftContent}
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 0 }} >
           <Tooltip title="Open settings">
             <div>
               {rightContent}
@@ -62,12 +69,12 @@ export function Navbar({ title, rightContent, ...rest }) {
             anchorEl={anchorElUser}
             anchorOrigin={{
               vertical: "top",
-              horizontal: "right"
+              horizontal: "right",
             }}
             keepMounted
             transformOrigin={{
               vertical: "top",
-              horizontal: "right"
+              horizontal: "right",
             }}
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}

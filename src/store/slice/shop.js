@@ -7,7 +7,9 @@ export const shopSlice = createSlice({
     products: [],
     basketOpened: false,
     basket: JSON.parse(localStorage.getItem("basket")) ?? [],
-    error: null
+    error: null,
+    categories: [],
+    applicationOpened: false,
   },
   reducers: {
     setLoading(state, action) {
@@ -30,7 +32,7 @@ export const shopSlice = createSlice({
       } else {
         state.basket.push({
           ...product,
-          count: 1
+          count: 1,
         });
       }
     },
@@ -49,8 +51,14 @@ export const shopSlice = createSlice({
     },
     clearBasket(state) {
       state.basket = [];
-    }
-  }
+    },
+    setCategories(state, action) {
+      state.categories = action.payload;
+    },
+    setApplicationOpened(state, action) {
+      state.applicationOpened = action.payload;
+    },
+  },
 });
 
 export const {
@@ -61,7 +69,9 @@ export const {
   removeItemFromBasket,
   clearBasket,
   setLoading,
-  setError
+  setError,
+  setCategories,
+  setApplicationOpened,
 } = shopSlice.actions;
 
 export const shopReducer = shopSlice.reducer;
