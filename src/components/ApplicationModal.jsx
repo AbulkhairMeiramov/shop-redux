@@ -5,17 +5,15 @@ import {
   Button,
   Modal,
   Box,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import { required } from "../utils/validators";
+import { required, validateTelephoneNum } from "../utils/validators";
 import { getInputState } from "../utils/getInputState";
 import { useForm } from "react-hook-form";
 import { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const StyledBox = styled(Box)`
   width: 400px;
@@ -30,22 +28,29 @@ const StyledBox = styled(Box)`
   border-radius: 8px;
 `;
 
-export const ApplicationModal = () => {
-  const [open, setOpen] = useState(false);
+export const ApplicationModal = (props) => {
   const { register, handleSubmit, formState, getValues } = useForm({
     defaultValues: JSON.parse(localStorage.getItem("user")) || {},
   });
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  const dispatch = useDispatch();
+  const { applicationOpened } = useSelector((state) => state.shop);
 
   const onSubmit = useCallback(() => {
     alert("Submitted");
   });
 
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCityName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
   return (
-    <Modal open={true}>
+    <Modal {...props} open={applicationOpened}>
       <StyledBox>
         <form onSubmit={handleSubmit(onSubmit)}>
           <h2>Оформление заявки</h2>
@@ -61,8 +66,10 @@ export const ApplicationModal = () => {
             <TextField
               label="Номер телефона"
               variant="outlined"
-              type="number"
-              {...register("telephoneNum", { required: required() })}
+              {...register("telephoneNum", {
+                required: required(),
+                validate: validateTelephoneNum,
+              })}
               {...getInputState(formState, "telephoneNum")}
             />
           </FormControl>
@@ -75,17 +82,18 @@ export const ApplicationModal = () => {
               {...getInputState(formState, "email")}
             />
           </FormControl>
-          <ListItemButton onClick={handleClick}>
-            <ListItemText primary="Город" />
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }}>
-                <ListItemText primary="Starred" />
-              </ListItemButton>
-            </List>
-          </Collapse>
+          <FormControl sx={{ width: "100%", mb: 1 }}>
+            <InputLabel id="demo-simple-select-label">Город</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Город"
+              onChange={handleChange}
+            >
+              <MenuItem value="Almaty">Алматы</MenuItem>
+              <MenuItem value="Nur-Sultan">Нур-Султан</MenuItem>
+            </Select>
+          </FormControl>
           <FormControl sx={{ width: "30%", mb: 1 }}>
             <Button type="submit" variant="outlined">
               Отправить

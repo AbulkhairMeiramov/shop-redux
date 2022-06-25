@@ -13,3 +13,14 @@ export function validateCPassword(password) {
     }
   };
 }
+
+export function validateTelephoneNum(value) {
+  for (let i = 0; i < value.length; i++) {
+    if (value.length > 11 || value.length < 11) {
+      return "Minimum 11 symbols";
+    }
+    if (value.charAt(0) !== 8) {
+      return "Your password is invalid";
+    }
+  }
+}

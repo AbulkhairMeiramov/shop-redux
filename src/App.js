@@ -8,13 +8,12 @@ import { ApplicationModal } from "./components/ApplicationModal";
 export default function App() {
   return (
     <div className="App">
-      {/* <Routes>
+      <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<RegistrationPage />} />
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/" element={<Navigate to="/login" />} />
-      </Routes> */}
-      <ApplicationModal />
+      </Routes>
     </div>
   );
 }

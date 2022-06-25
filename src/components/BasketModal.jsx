@@ -17,8 +17,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   changeBasketItemCount,
   clearBasket,
-  removeItemFromBasket
+  removeItemFromBasket,
+  setApplicationOpened
 } from "../store/slice/shop";
+import { ApplicationModal } from "./ApplicationModal";
 
 const StyledBox = styled(Box)`
   width: 400px;
@@ -119,6 +121,8 @@ export const BasketModal = (props) => {
           ))}
         </List>
         <Button onClick={() => dispatch(clearBasket())}>Clear all</Button>
+        <Button onClick={() => dispatch(setApplicationOpened(true))}>Оформить заявку</Button>
+        <ApplicationModal onClose={() => dispatch(setApplicationOpened(false))} />
       </StyledBox>
     </Modal>
   );
